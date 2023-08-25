@@ -1,6 +1,8 @@
 package es.apps.laos.mybunker
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,8 +35,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import es.apps.laos.mybunker.ui.theme.MyBunkerTheme
 
 class MainActivity : ComponentActivity() {
@@ -81,6 +85,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BunkerTopAppBar(passwordEntryList: ArrayList<PasswordEntry>) {
+    val context: Context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -104,7 +109,11 @@ fun BunkerTopAppBar(passwordEntryList: ArrayList<PasswordEntry>) {
                 }
             )
         },
-        floatingActionButton = { FloatingActionButton(onClick = {/*TODO*/}){
+        floatingActionButton = { FloatingActionButton(onClick = {
+            // Open new form for adding a new password
+            val intent = Intent(context,NewPasswordActivity::class.java)
+            context.startActivity(intent)
+        }){
             Icon(Icons.Filled.Add, "New password")
         } },
         floatingActionButtonPosition = FabPosition.End,
