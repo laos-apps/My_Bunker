@@ -54,21 +54,21 @@ class MainActivity : ComponentActivity() {
                     // Generate sample data
                     val passwordEntryLists: ArrayList<PasswordEntry> = arrayListOf(
                         PasswordEntry(
+                            title = null,
                             user = "Alberto",
                             password = "mypass",
-                            mail = null,
                             extraInfo = null
                         ),
                         PasswordEntry(
+                            title = null,
                             user = "Luis",
                             password = "33hddns",
-                            mail = null,
                             extraInfo = null
                         ),
                         PasswordEntry(
+                            title = null,
                             user = "Pepe",
                             password = "$56´._",
-                            mail = null,
                             extraInfo = null
                         ),
                     )
@@ -145,9 +145,9 @@ fun PasswordEntryView(passwordEntry: PasswordEntry) {
             .padding(5.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
+        Text(text = "Title: ${passwordEntry.title}")
         Text(text = "User: ${passwordEntry.user}")
         Text(text = "Password: ******")
-        Text(text = "User: ${passwordEntry.mail}")
         Text(text = "Extra info: ${passwordEntry.extraInfo}")
     }
 }
