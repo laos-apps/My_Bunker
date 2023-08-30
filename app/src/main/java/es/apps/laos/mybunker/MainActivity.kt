@@ -1,12 +1,10 @@
 package es.apps.laos.mybunker
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +16,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,13 +29,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import es.apps.laos.mybunker.ui.theme.MyBunkerTheme
 
 class MainActivity : ComponentActivity() {
@@ -72,19 +65,17 @@ class MainActivity : ComponentActivity() {
                             extraInfo = null
                         ),
                     )
-                    BunkerTopAppBar(passwordEntryList = passwordEntryLists)
+                    MainViewScheme(passwordEntryList = passwordEntryLists)
                 }
             }
         }
     }
 }
 
-// App top bar
-
-
+// Compose design for viewing passwords
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BunkerTopAppBar(passwordEntryList: ArrayList<PasswordEntry>) {
+fun MainViewScheme(passwordEntryList: ArrayList<PasswordEntry>) {
     val context: Context = LocalContext.current
     Scaffold(
         topBar = {

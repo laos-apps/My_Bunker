@@ -1,5 +1,6 @@
 package es.apps.laos.mybunker
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -52,7 +53,9 @@ class Field(
                 value = text,
                 isError = hasError,
                 label = { Text(text = lbl) },
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
                 onValueChange = { value ->
                     hideError()
                     text = value
@@ -63,7 +66,9 @@ class Field(
                 value = text,
                 isError = hasError,
                 label = { Text(text = lbl) },
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
                 onValueChange = { value ->
                     hideError()
                     text = value
