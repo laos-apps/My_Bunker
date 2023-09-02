@@ -21,7 +21,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 class Field(
-    val name: String,
+    val name: String, // internal name, it is used when getData in FormState.kt is used
     val label: String = "",
     private val isPassword: Boolean = false,
     val validators: List<Validator>
