@@ -23,4 +23,7 @@ interface PasswordDao {
 
     @Query("SELECT * FROM password_table")
     fun getAll(): List<PasswordEntity>
+
+    @Query("SELECT * FROM password_table WHERE id=(:id)")
+    fun getPasswordById(id: Int): PasswordEntity
 }
