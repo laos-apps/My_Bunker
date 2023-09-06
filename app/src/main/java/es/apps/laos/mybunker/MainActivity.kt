@@ -8,16 +8,19 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
@@ -176,6 +179,7 @@ fun PasswordList(
 
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(items = passwordEntityList) {
+            var colorCard: Color by remember { mutableStateOf(Color.Cyan) }
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -200,14 +204,16 @@ fun PasswordList(
                                     "selectedPasswordArrayList contains id ${it.id}"
                                 )
                                 selectedPasswordArrayList.remove(it.id)
+                                colorCard = Color.Cyan
                             } else {
                                 Log.v(
                                     "MBK::MainActivity::PasswordList::onLongClick",
                                     "selectedPasswordArrayList DOES NOT contain id ${it.id}"
                                 )
                                 selectedPasswordArrayList.add(it.id)
+                                colorCard = Color.Red
                             }
-                            Log.v(
+                            Log.d(
                                 "MBK::MainActivity::PasswordList::onLongClick",
                                 "selectedPasswordArrayList content: $selectedPasswordArrayList"
                             )
@@ -221,7 +227,10 @@ fun PasswordList(
                                 changeState(MainActivityState.DEFAULT)
                         }
                     ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = colorCard,
+                )
             ) {
                 Log.v(
                     "MBK::MainActivity::PasswordList",
@@ -230,7 +239,6 @@ fun PasswordList(
                 Text(text = "Title: ${it.title}")
                 Text(text = "User: ${it.user}")
                 Text(text = "Password: ******")
-                Text(text = "Selected: ${selectedPasswordMutableStateList.value.contains(it.id)}")
                 Text(text = "Extra info: ${it.extraInfo}")
             }
         }
