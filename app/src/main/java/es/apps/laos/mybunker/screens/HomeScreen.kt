@@ -138,10 +138,14 @@ fun HomeScreen(navController: NavController) {
                                     DropdownMenuItem(
                                         text = { Text("Language") },
                                         leadingIcon = { Icon(imageVector = Icons.Filled.Language, contentDescription = "Language") },
-                                        onClick = { Log.d(
+                                        onClick = {
+                                            Log.d(
                                             "MBK::HomeScreen::DropdownMenuItem2",
-                                            "DropdownMenu option 2 clicked"
-                                        ) }
+                                            "DropdownMenu option 2 clicked")
+                                            // Go back to language settings screen
+                                            navController.navigate(Screens.LanguageSettings.route)
+
+                                        }
                                     )
                                 }
                             } else if (mainActivityState == MainActivityState.DELETE_PASSWORD) {

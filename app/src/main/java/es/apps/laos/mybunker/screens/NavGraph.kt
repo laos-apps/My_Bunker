@@ -36,5 +36,12 @@ fun NavGraph(navController: NavHostController) {
             val passwordId = backStackEntry.arguments?.getInt("passwordId")?: -1 // if it is null, will get -1
             EditPasswordScreen(navController = navController, passwordId = passwordId)
         }
+        // Dropdown menu screens
+        // Screen for configuring language
+        composable(
+            route = Screens.LanguageSettings.route
+        ) {
+            LanguageSettingsScreen(navController = navController)
+        }
     }
 }
