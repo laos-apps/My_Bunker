@@ -12,11 +12,11 @@ interface PasswordDao {
     @Insert
     fun insertPassword(passwordEntity: PasswordEntity)
 
-    @Insert
-    fun insertAll(vararg passwordEntries: PasswordEntity)
+    @Update
+    fun updatePassword(passwordEntity: PasswordEntity)
 
     @Update
-    fun updateUsers(vararg passwordEntries: PasswordEntity)
+    fun updatePasswords(vararg passwordEntities: PasswordEntity)
 
     @Delete
     fun delete(passwordEntity: PasswordEntity)
@@ -25,5 +25,5 @@ interface PasswordDao {
     fun getAll(): List<PasswordEntity>
 
     @Query("SELECT * FROM password_table WHERE id=(:id)")
-    fun getPasswordById(id: Int): PasswordEntity
+    fun getPasswordById(id: Int?): PasswordEntity
 }

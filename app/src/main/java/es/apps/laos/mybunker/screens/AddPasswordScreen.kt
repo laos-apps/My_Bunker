@@ -1,4 +1,4 @@
-package es.apps.laos.mybunker
+package es.apps.laos.mybunker.screens
 
 import android.content.Context
 import android.util.Log
@@ -27,13 +27,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import es.apps.laos.mybunker.AppDatabase
+import es.apps.laos.mybunker.Field
+import es.apps.laos.mybunker.FormState
+import es.apps.laos.mybunker.PasswordDao
+import es.apps.laos.mybunker.PasswordEntity
+import es.apps.laos.mybunker.Required
+import es.apps.laos.mybunker.getDbConnection
 import es.apps.laos.mybunker.ui.theme.MyBunkerTheme
-
-// Constants for naming fields in AddPasswordScreen.kt
-const val TITLE_FIELD_NAME = "title"
-const val USER_FIELD_NAME = "user"
-const val PASSWORD_FIELD_NAME = "password"
-const val EXTRA_INFO_FIELD_NAME = "extraInfo"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,11 +81,9 @@ fun AddPasswordScreen(navController: NavController) {
                                         "Field data: ${field.key}: ${field.value}"
                                     )
                                 }
-                                //Store values in database TODO (Create DBManager)
-                                val passwordDao: PasswordDao =
-                                    AppDatabase.getInstance(context = context)?.passwordDao()!!
+                                //Store values in database
                                 // Insert new password
-                                passwordDao.insertPassword(
+                                getDbConnection(context = context).insertPassword(
                                     passwordEntity = PasswordEntity(
                                         title = newPasswordEntryMap[TITLE_FIELD_NAME],
                                         user = newPasswordEntryMap[USER_FIELD_NAME],
@@ -127,22 +126,26 @@ fun NewPasswordForm(state: FormState, paddingValues: PaddingValues) {
                 fields = listOf(
                     Field(
                         name = TITLE_FIELD_NAME,
+                        textValue = "",
                         label = "Title/Web",
                         validators = listOf(Required(message = "Title/Web is required"))
                     ),
                     Field(
                         name = USER_FIELD_NAME,
+                        textValue = "",
                         label = "User",
                         validators = listOf(Required(message = "User is required"))
                     ),
                     Field(
                         name = PASSWORD_FIELD_NAME,
+                        textValue = "",
                         label = "Password",
                         isPassword = true,
                         validators = listOf(Required(message = "Password is required"))
                     ),
                     Field(
                         name = EXTRA_INFO_FIELD_NAME,
+                        textValue = "",
                         label = "Extra info",
                         validators = listOf(Required(message = "Extra info is required"))
                     )

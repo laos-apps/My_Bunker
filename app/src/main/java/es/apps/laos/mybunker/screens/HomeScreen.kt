@@ -1,4 +1,4 @@
-package es.apps.laos.mybunker
+package es.apps.laos.mybunker.screens
 
 import android.content.Context
 import android.util.Log
@@ -39,6 +39,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import es.apps.laos.mybunker.AppDatabase
+import es.apps.laos.mybunker.MainActivityState
+import es.apps.laos.mybunker.PasswordDao
+import es.apps.laos.mybunker.PasswordEntity
+import es.apps.laos.mybunker.getDbConnection
 import es.apps.laos.mybunker.ui.theme.MyBunkerTheme
 
 // NON-COMPOSABLE METHODS
@@ -54,11 +59,7 @@ fun getPasswordList(context: Context): ArrayList<PasswordEntity> {
     return passwordEntityList
 }
 
-// Gets DAO object for connecting local DB
-fun getDbConnection(context: Context): PasswordDao {
-    // Get DB connection
-    return AppDatabase.getInstance(context)?.passwordDao()!!
-}
+
 
 
 // COMPOSABLE METHODS
@@ -160,6 +161,7 @@ fun HomeScreen(navController: NavController) {
                     // In order to avoid that content is shown behind the top-bar we have to pass padding values
                     Column(modifier = Modifier.padding(paddingValues = paddingValues)) {
                         PasswordList(
+                            navController = navController,
                             passwordEntityList = getPasswordList(context),
                             changeState = { _mainActivityState ->
                                 mainActivityState = _mainActivityState
@@ -183,6 +185,7 @@ fun HomeScreen(navController: NavController) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PasswordList(
+    navController: NavController,
     passwordEntityList: List<PasswordEntity>,
     changeState: (MainActivityState) -> Unit,
     passwordListToDelete: (ArrayList<Int>) -> Unit
@@ -203,9 +206,15 @@ fun PasswordList(
                     .combinedClickable(
                         onClick = {
                             Log.v(
-                                "MBK::MainActivity::PasswordEntryView",
+                                "MBK::MainActivity::PasswordList",
                                 "Card of password with id  ${it.id} was clicked"
                             )
+                            // Open new form for adding a new password, we pass password id
+                            Log.v(
+                                "MBK::MainActivity::PasswordList",
+                                "Route passed to navController: ${Screens.EditPassword.route}/${it.id}"
+                            )
+                            navController.navigate(Screens.EditPassword.route+"/${it.id}")
                         },
                         onLongClick = {
                             Log.v(

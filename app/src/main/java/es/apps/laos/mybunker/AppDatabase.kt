@@ -29,3 +29,9 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 }
+
+// Gets DAO object for connecting local DB
+fun getDbConnection(context: Context): PasswordDao {
+    // Get DB connection
+    return AppDatabase.getInstance(context)?.passwordDao()!!
+}
