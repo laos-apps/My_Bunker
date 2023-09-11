@@ -83,7 +83,6 @@ fun EditPasswordScreen(navController: NavController, passwordId: Int) {
 
 @Composable
 fun EditPasswordForm(state: FormState, paddingValues: PaddingValues, navController: NavController, passwordId: Int) {
-
     val context: Context = LocalContext.current
     // Get password entity from database
     val passwordEntity: PasswordEntity = getDbConnection(context = context).getPasswordById(id = passwordId)
@@ -132,7 +131,7 @@ fun EditPasswordForm(state: FormState, paddingValues: PaddingValues, navControll
                     onClick = { //Actions for storing passwords
                         if (state.validate()) {
                             Log.i(
-                                "MBK::NewPasswordActivity::NewPasswordScheme",
+                                "MBK::EditPasswordScreen::EditPasswordForm",
                                 "New form entry has been validated"
                             )
                             //Get values from fields in the form
@@ -140,7 +139,7 @@ fun EditPasswordForm(state: FormState, paddingValues: PaddingValues, navControll
                             // Logs the content of the form when save icon is pressed
                             newPasswordEntryMap.forEach { field ->
                                 Log.d(
-                                    "MBK::NewPasswordActivity::NewPasswordScheme",
+                                    "MBK::EditPasswordScreen::EditPasswordForm",
                                     "Field data: ${field.key}: ${field.value}"
                                 )
                             }
@@ -156,7 +155,7 @@ fun EditPasswordForm(state: FormState, paddingValues: PaddingValues, navControll
                                 )
                             )
                             Log.d(
-                                "MBK::NewPasswordActivity::NewPasswordScheme",
+                                "MBK::EditPasswordScreen::EditPasswordForm",
                                 "Updating password"
                             )
 

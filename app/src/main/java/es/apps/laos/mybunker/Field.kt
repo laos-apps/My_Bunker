@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 
 class Field(
     val name: String, // internal name, it is used when getData in FormState.kt is used
-    val textValue: String,
+    val textValue: String = "",
     val label: String = "",
     private val isPassword: Boolean = false,
     val validators: List<Validator>

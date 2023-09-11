@@ -14,10 +14,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.ImportExport
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Output
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -71,6 +79,8 @@ fun HomeScreen(navController: NavController) {
     val context: Context = LocalContext.current
     // Stores the current state of the main activity
     var mainActivityState by remember { mutableStateOf(MainActivityState.DEFAULT) }
+    // Stores the display menu state
+    var displayMenuState by remember { mutableStateOf(false) }
     // Stores an integer list with passwords to be deleted when selected
     var passwordListToDelete: ArrayList<Int> = ArrayList()
 
@@ -106,17 +116,32 @@ fun HomeScreen(navController: NavController) {
                         },
                         actions = {
                             if (mainActivityState == MainActivityState.DEFAULT) {
-                                IconButton(onClick = { /*TODO*/ }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Share,
-                                        contentDescription = "Share"
-                                    )
-                                }
-
-                                IconButton(onClick = { /*TODO*/ }) {
+                                IconButton(onClick = { displayMenuState = !displayMenuState}) {
                                     Icon(
                                         imageVector = Icons.Filled.MoreVert,
                                         contentDescription = "Ver más"
+                                    )
+                                }
+                                // Creating a dropdown menu
+                                DropdownMenu(
+                                    expanded = displayMenuState,
+                                    onDismissRequest = { displayMenuState = false }
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text("Export") },
+                                        leadingIcon = { Icon(imageVector = Icons.Filled.Output, contentDescription = "Export") },
+                                        onClick = {Log.d(
+                                            "MBK::HomeScreen::HomeScreen::DropdownMenuItem1",
+                                            "DropdownMenu option 1 clicked"
+                                        ) }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text("Language") },
+                                        leadingIcon = { Icon(imageVector = Icons.Filled.Language, contentDescription = "Language") },
+                                        onClick = { Log.d(
+                                            "MBK::HomeScreen::DropdownMenuItem2",
+                                            "DropdownMenu option 2 clicked"
+                                        ) }
                                     )
                                 }
                             } else if (mainActivityState == MainActivityState.DELETE_PASSWORD) {
@@ -129,7 +154,7 @@ fun HomeScreen(navController: NavController) {
                                             ).getPasswordById(passwordID)
                                         )
                                         Log.d(
-                                            "MBK::MainActivity::MainViewScheme",
+                                            "MBK::HomeScreen::HomeScreen",
                                             "Password deleted: $passwordID"
                                         )
                                         // Go back to home screen
@@ -169,7 +194,7 @@ fun HomeScreen(navController: NavController) {
                             passwordListToDelete = { _passwordListToDelete ->
                                 passwordListToDelete = _passwordListToDelete
                                 Log.v(
-                                    "MBK::MainActivity::MainViewScheme::content}",
+                                    "MBK::HomeScreen::HomeScreen::content}",
                                     "Content of passwordListToDelete: $passwordListToDelete"
                                 )
                             }
@@ -206,40 +231,40 @@ fun PasswordList(
                     .combinedClickable(
                         onClick = {
                             Log.v(
-                                "MBK::MainActivity::PasswordList",
+                                "MBK::HomeScreen::PasswordList",
                                 "Card of password with id  ${it.id} was clicked"
                             )
                             // Open new form for adding a new password, we pass password id
                             Log.v(
-                                "MBK::MainActivity::PasswordList",
+                                "MBK::HomeScreen::PasswordList",
                                 "Route passed to navController: ${Screens.EditPassword.route}/${it.id}"
                             )
                             navController.navigate(Screens.EditPassword.route+"/${it.id}")
                         },
                         onLongClick = {
                             Log.v(
-                                "MBK::MainActivity::PasswordEntryView",
+                                "MBK::HomeScreen::PasswordList::onLongClick",
                                 "Card of password with id  ${it.id} was LONG clicked"
                             )
 
                             // Add/remove item to/from selected list
                             colorCard = if (selectedPasswordArrayList.contains(it.id)) {
                                 Log.v(
-                                    "MBK::MainActivity::PasswordList::onLongClick",
+                                    "MBK::HomeScreen::PasswordList::onLongClick",
                                     "selectedPasswordArrayList contains id ${it.id}"
                                 )
                                 selectedPasswordArrayList.remove(it.id)
                                 Color.Cyan
                             } else {
                                 Log.v(
-                                    "MBK::MainActivity::PasswordList::onLongClick",
+                                    "MBK::HomeScreen::PasswordList::onLongClick",
                                     "selectedPasswordArrayList DOES NOT contain id ${it.id}"
                                 )
                                 selectedPasswordArrayList.add(it.id)
                                 Color.Red
                             }
                             Log.d(
-                                "MBK::MainActivity::PasswordList::onLongClick",
+                                "MBK::HomeScreen::PasswordList::onLongClick",
                                 "selectedPasswordArrayList content: $selectedPasswordArrayList"
                             )
                             // Update

@@ -2,14 +2,19 @@ package es.apps.laos.mybunker.screens
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -26,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import es.apps.laos.mybunker.AppDatabase
 import es.apps.laos.mybunker.Field
@@ -64,50 +70,9 @@ fun AddPasswordScreen(navController: NavController) {
                         title = { Text(text = "New password") },
                     )
                 },
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = { //Actions for storing passwords
-                            if (state.validate()) {
-                                Log.i(
-                                    "MBK::NewPasswordActivity::NewPasswordScheme",
-                                    "New form entry has been validated"
-                                )
-                                //Get values from fields in the form
-                                val newPasswordEntryMap: Map<String, String> = state.getData()
-                                // Logs the content of the form when save icon is pressed
-                                newPasswordEntryMap.forEach { field ->
-                                    Log.d(
-                                        "MBK::NewPasswordActivity::NewPasswordScheme",
-                                        "Field data: ${field.key}: ${field.value}"
-                                    )
-                                }
-                                //Store values in database
-                                // Insert new password
-                                getDbConnection(context = context).insertPassword(
-                                    passwordEntity = PasswordEntity(
-                                        title = newPasswordEntryMap[TITLE_FIELD_NAME],
-                                        user = newPasswordEntryMap[USER_FIELD_NAME],
-                                        password = newPasswordEntryMap[PASSWORD_FIELD_NAME],
-                                        extraInfo = newPasswordEntryMap[EXTRA_INFO_FIELD_NAME],
-                                    )
-                                )
-                                Log.d(
-                                    "MBK::NewPasswordActivity::NewPasswordScheme",
-                                    "Inserting password"
-                                )
-                                // Go back home
-                                navController.navigate(Screens.Home.route)
-                            }
-                        },
-                    )
-                    { // Image for the icon will be a disk
-                        Icon(Icons.Filled.Save, "Save password")
-                    }
-                },
-                floatingActionButtonPosition = FabPosition.End,
                 content = {
                     // In order to avoid that content is shown behind the top bar we have to pass PaddingValues
-                    NewPasswordForm(state = state, paddingValues = it)
+                    NewPasswordForm(state = state, paddingValues = it, navController = navController)
                 }
             )
         }
@@ -115,7 +80,8 @@ fun AddPasswordScreen(navController: NavController) {
 }
 
 @Composable
-fun NewPasswordForm(state: FormState, paddingValues: PaddingValues) {
+fun NewPasswordForm(state: FormState, paddingValues: PaddingValues, navController: NavController) {
+    val context: Context = LocalContext.current
     Box(
         modifier = Modifier
             .padding(paddingValues = paddingValues)
@@ -126,31 +92,73 @@ fun NewPasswordForm(state: FormState, paddingValues: PaddingValues) {
                 fields = listOf(
                     Field(
                         name = TITLE_FIELD_NAME,
-                        textValue = "",
                         label = "Title/Web",
                         validators = listOf(Required(message = "Title/Web is required"))
                     ),
                     Field(
                         name = USER_FIELD_NAME,
-                        textValue = "",
                         label = "User",
                         validators = listOf(Required(message = "User is required"))
                     ),
                     Field(
                         name = PASSWORD_FIELD_NAME,
-                        textValue = "",
                         label = "Password",
                         isPassword = true,
                         validators = listOf(Required(message = "Password is required"))
                     ),
                     Field(
                         name = EXTRA_INFO_FIELD_NAME,
-                        textValue = "",
                         label = "Extra info",
                         validators = listOf(Required(message = "Extra info is required"))
                     )
                 )
             )
+            Row(
+                modifier = Modifier.fillMaxSize().padding(end = 20.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Button(
+                    onClick = { //Actions for storing passwords
+                        if (state.validate()) {
+                            Log.i(
+                                "MBK::AddPasswordScreen::NewPasswordForm",
+                                "New form entry has been validated"
+                            )
+                            //Get values from fields in the form
+                            val newPasswordEntryMap: Map<String, String> = state.getData()
+                            // Logs the content of the form when save icon is pressed
+                            newPasswordEntryMap.forEach { field ->
+                                Log.d(
+                                    "MBK::AddPasswordScreen::NewPasswordForm",
+                                    "Field data: ${field.key}: ${field.value}"
+                                )
+                            }
+                            //Store values in database
+                            // Update existing password
+                            getDbConnection(context = context).insertPassword(
+                                passwordEntity = PasswordEntity(
+                                    title = newPasswordEntryMap[TITLE_FIELD_NAME],
+                                    user = newPasswordEntryMap[USER_FIELD_NAME],
+                                    password = newPasswordEntryMap[PASSWORD_FIELD_NAME],
+                                    extraInfo = newPasswordEntryMap[EXTRA_INFO_FIELD_NAME],
+                                )
+                            )
+                            Log.d(
+                                "MBK::AddPasswordScreen::NewPasswordForm",
+                                "Updating password"
+                            )
+
+                            // Go back home
+                            navController.navigate(Screens.Home.route)
+                        }
+                    },
+                )
+                { // Image for the icon will be a disk
+                    Icon(Icons.Filled.Save, "Save password")
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = "Save")
+                }
+            }
         }
     }
 }
