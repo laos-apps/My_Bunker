@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Flag
 import java.util.Locale
 
+// Codes for language keys extracted from ISO-3166-1
 class LanguageManager {
     var languagesList: ArrayList<Language> = ArrayList()
     init {
@@ -12,6 +13,13 @@ class LanguageManager {
             Language(
                 languageKey = "ES",
                 languageName = "Español",
+            )
+        )
+        // English
+        languagesList.add(
+            Language(
+                languageKey = "GB",
+                languageName = "English",
             )
         )
         // French

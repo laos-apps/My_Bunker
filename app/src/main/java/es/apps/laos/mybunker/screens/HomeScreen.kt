@@ -144,7 +144,6 @@ fun HomeScreen(navController: NavController) {
                                             "DropdownMenu option 2 clicked")
                                             // Go back to language settings screen
                                             navController.navigate(Screens.LanguageSettings.route)
-
                                         }
                                     )
                                 }
