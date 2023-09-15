@@ -14,14 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Flag
-import androidx.compose.material.icons.filled.ImportExport
-import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Output
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -48,10 +42,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import es.apps.laos.mybunker.AppDatabase
 import es.apps.laos.mybunker.LanguageManager
 import es.apps.laos.mybunker.MainActivityState
-import es.apps.laos.mybunker.PasswordDao
 import es.apps.laos.mybunker.PasswordEntity
 import es.apps.laos.mybunker.R
 import es.apps.laos.mybunker.getDbConnection
@@ -141,7 +133,8 @@ fun HomeScreen(navController: NavController) {
                                             "DropdownMenu option 1 clicked"
                                         ) }
                                     )
-                                    DropdownMenuItem(
+                                    // Language option will be commented because language is auto-detected by android. Just translate strings.xml
+                                    /*DropdownMenuItem(
                                         text = { Text(stringResource(R.string.language)) },
                                         leadingIcon = { Icon(imageVector = Icons.Filled.Language, contentDescription = stringResource(R.string.language)) },
                                         onClick = {
@@ -151,7 +144,7 @@ fun HomeScreen(navController: NavController) {
                                             // Go back to language settings screen
                                             navController.navigate(Screens.LanguageSettings.route)
                                         }
-                                    )
+                                    )*/
                                 }
                             } else if (mainActivityState == MainActivityState.DELETE_PASSWORD) {
                                 IconButton(onClick = {

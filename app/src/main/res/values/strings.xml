@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Bunker</string>
+    <string name="app_name" translatable="false">My Bunker</string>
     <string name="go_home">Go home</string>
     <string name="new_password">New password</string>
     <string name="title_web">Title/Web</string>
@@ -13,7 +13,7 @@
     <string name="save_password">Save password</string>
     <string name="save">Save</string>
     <string name="edit_password">Edit password</string>
-    <string name="my_bunker">My Bunker</string>
+    <string name="my_bunker" translatable="false">My Bunker</string>
     <string name="delete_password">Delete password</string>
     <string name="view_more">View more</string>
     <string name="export">Export</string>
