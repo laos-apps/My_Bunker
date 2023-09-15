@@ -29,11 +29,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import es.apps.laos.mybunker.Field
 import es.apps.laos.mybunker.FormState
 import es.apps.laos.mybunker.PasswordEntity
+import es.apps.laos.mybunker.R
 import es.apps.laos.mybunker.Required
 import es.apps.laos.mybunker.getDbConnection
 import es.apps.laos.mybunker.ui.theme.MyBunkerTheme
@@ -64,11 +66,11 @@ fun EditPasswordScreen(navController: NavController, passwordId: Int) {
                             }) {
                                 Icon(
                                     imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = "Go home"
+                                    contentDescription = stringResource(R.string.go_home)
                                 )
                             }
                         },
-                        title = { Text(text = "Edit password") },
+                        title = { Text(text = stringResource(R.string.edit_password)) },
                     )
                 },
                 content = {
@@ -97,27 +99,27 @@ fun EditPasswordForm(state: FormState, paddingValues: PaddingValues, navControll
                     Field(
                         name = TITLE_FIELD_NAME,
                         textValue = passwordEntity.title ?: "", // if it is null, will print "" (nothing)
-                        label = "Title/Web",
-                        validators = listOf(Required(message = "Title/Web is required"))
+                        label = stringResource(R.string.title_web),
+                        validators = listOf(Required(message = stringResource(R.string.title_web_is_required)))
                     ),
                     Field(
                         name = USER_FIELD_NAME,
                         textValue = passwordEntity.user ?: "",
-                        label = "User",
-                        validators = listOf(Required(message = "User is required"))
+                        label = stringResource(R.string.user),
+                        validators = listOf(Required(message = stringResource(R.string.user_is_required)))
                     ),
                     Field(
                         name = PASSWORD_FIELD_NAME,
                         textValue = passwordEntity.password?: "",
-                        label = "Password",
+                        label = stringResource(R.string.password),
                         isPassword = true,
-                        validators = listOf(Required(message = "Password is required"))
+                        validators = listOf(Required(message = stringResource(R.string.password_is_required)))
                     ),
                     Field(
                         name = EXTRA_INFO_FIELD_NAME,
                         textValue = passwordEntity.extraInfo?: "",
-                        label = "Extra info",
-                        validators = listOf(Required(message = "Extra info is required"))
+                        label = stringResource(R.string.extra_info),
+                        validators = listOf(Required(message = stringResource(R.string.extra_info_is_required)))
                     )
                 )
             )
@@ -164,9 +166,9 @@ fun EditPasswordForm(state: FormState, paddingValues: PaddingValues, navControll
                     },
                 )
                 { // Image for the icon will be a disk
-                    Icon(Icons.Filled.Save, "Save password")
+                    Icon(Icons.Filled.Save, stringResource(R.string.save_password))
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = "Save")
+                    Text(text = stringResource(R.string.save))
                 }
             }
 

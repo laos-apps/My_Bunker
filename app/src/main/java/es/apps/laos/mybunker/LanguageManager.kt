@@ -1,7 +1,10 @@
 package es.apps.laos.mybunker
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Flag
+import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import es.apps.laos.mybunker.screens.DEFAULT_LANGUAGE_KEY
 import java.util.Locale
 
 // Codes for language keys extracted from ISO-3166-1
@@ -78,5 +81,19 @@ class LanguageManager {
             .joinToString(separator = "") { charArray ->
                 String(charArray)
             }
+    }
+
+    @Composable
+    fun getUserLanguageFromSettings(context: Context): String{
+        // Get userLanguageKey from preferences
+        val settingsManager = SettingsManager(context)
+        var userLanguageKey = settingsManager.getLanguageFromDatastore().collectAsState(initial = "").value
+        Log.d(
+            "MBK::LanguageSettingsScreen::LanguageSelectionMenu",
+            "User language key is: $userLanguageKey"
+        )
+        // If language is still not set, GB will be chosen by default
+        if (userLanguageKey.isEmpty()) userLanguageKey = DEFAULT_LANGUAGE_KEY
+        return userLanguageKey
     }
 }

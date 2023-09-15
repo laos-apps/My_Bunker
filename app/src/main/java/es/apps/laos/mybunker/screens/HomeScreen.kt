@@ -45,12 +45,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import es.apps.laos.mybunker.AppDatabase
+import es.apps.laos.mybunker.LanguageManager
 import es.apps.laos.mybunker.MainActivityState
 import es.apps.laos.mybunker.PasswordDao
 import es.apps.laos.mybunker.PasswordEntity
+import es.apps.laos.mybunker.R
 import es.apps.laos.mybunker.getDbConnection
 import es.apps.laos.mybunker.ui.theme.MyBunkerTheme
 
@@ -67,9 +70,6 @@ fun getPasswordList(context: Context): ArrayList<PasswordEntity> {
     return passwordEntityList
 }
 
-
-
-
 // COMPOSABLE METHODS
 // Compose main view for listing passwords
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,6 +83,12 @@ fun HomeScreen(navController: NavController) {
     var displayMenuState by remember { mutableStateOf(false) }
     // Stores an integer list with passwords to be deleted when selected
     var passwordListToDelete: ArrayList<Int> = ArrayList()
+    // Gets user language
+    val userLanguage = LanguageManager().getUserLanguageFromSettings(context = context)
+    Log.v(
+        "MBK::MainActivity::HomeScreen",
+        "Language key: $userLanguage"
+    )
 
     // Depending on mainActivityState, the UI will change
     MyBunkerTheme {
@@ -103,23 +109,23 @@ fun HomeScreen(navController: NavController) {
                                 }) {
                                     Icon(
                                         imageVector = Icons.Filled.ArrowBack,
-                                        contentDescription = "Go home"
+                                        contentDescription = stringResource(R.string.go_home)
                                     )
                                 }
                             }
                         },
                         title = {
                             if (mainActivityState == MainActivityState.DEFAULT)
-                                Text(text = "My Bunker")
+                                Text(text = stringResource(R.string.my_bunker))
                             else if (mainActivityState == MainActivityState.DELETE_PASSWORD)
-                                Text(text = "Delete password")
+                                Text(text = stringResource(R.string.delete_password))
                         },
                         actions = {
                             if (mainActivityState == MainActivityState.DEFAULT) {
                                 IconButton(onClick = { displayMenuState = !displayMenuState}) {
                                     Icon(
                                         imageVector = Icons.Filled.MoreVert,
-                                        contentDescription = "Ver más"
+                                        contentDescription = stringResource(R.string.view_more)
                                     )
                                 }
                                 // Creating a dropdown menu
@@ -128,16 +134,16 @@ fun HomeScreen(navController: NavController) {
                                     onDismissRequest = { displayMenuState = false }
                                 ) {
                                     DropdownMenuItem(
-                                        text = { Text("Export") },
-                                        leadingIcon = { Icon(imageVector = Icons.Filled.Output, contentDescription = "Export") },
+                                        text = { Text(stringResource(R.string.export)) },
+                                        leadingIcon = { Icon(imageVector = Icons.Filled.Output, contentDescription = stringResource(R.string.export)) },
                                         onClick = {Log.d(
                                             "MBK::HomeScreen::HomeScreen::DropdownMenuItem1",
                                             "DropdownMenu option 1 clicked"
                                         ) }
                                     )
                                     DropdownMenuItem(
-                                        text = { Text("Language") },
-                                        leadingIcon = { Icon(imageVector = Icons.Filled.Language, contentDescription = "Language") },
+                                        text = { Text(stringResource(R.string.language)) },
+                                        leadingIcon = { Icon(imageVector = Icons.Filled.Language, contentDescription = stringResource(R.string.language)) },
                                         onClick = {
                                             Log.d(
                                             "MBK::HomeScreen::DropdownMenuItem2",
@@ -166,7 +172,7 @@ fun HomeScreen(navController: NavController) {
                                 }) {
                                     Icon(
                                         imageVector = Icons.Filled.Delete,
-                                        contentDescription = "Delete passwords"
+                                        contentDescription = stringResource(R.string.delete_passwords)
                                     )
                                 }
                             }
@@ -180,7 +186,7 @@ fun HomeScreen(navController: NavController) {
                             // Open new form for adding a new password
                             navController.navigate(Screens.AddPassword.route)
                         }) {
-                            Icon(Icons.Filled.Add, "New password")
+                            Icon(Icons.Filled.Add, stringResource(R.string.new_password))
                         }
                     }
                 },
@@ -242,7 +248,7 @@ fun PasswordList(
                                 "MBK::HomeScreen::PasswordList",
                                 "Route passed to navController: ${Screens.EditPassword.route}/${it.id}"
                             )
-                            navController.navigate(Screens.EditPassword.route+"/${it.id}")
+                            navController.navigate(Screens.EditPassword.route + "/${it.id}")
                         },
                         onLongClick = {
                             Log.v(
@@ -286,10 +292,10 @@ fun PasswordList(
                     containerColor = colorCard,
                 )
             ) {
-                Text(text = "Title: ${it.title}")
-                Text(text = "User: ${it.user}")
-                Text(text = "Password: ******")
-                Text(text = "Extra info: ${it.extraInfo}")
+                Text(text = stringResource(R.string.title_web)+": ${it.title}")
+                Text(text = stringResource(R.string.user)+": ${it.user}")
+                Text(text = stringResource(R.string.password)+": ******")
+                Text(text = stringResource(R.string.extra_info)+": ${it.extraInfo}")
             }
         }
     }

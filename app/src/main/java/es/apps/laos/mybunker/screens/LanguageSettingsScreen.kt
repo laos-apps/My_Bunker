@@ -29,17 +29,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import es.apps.laos.mybunker.LanguageManager
+import es.apps.laos.mybunker.R
 import es.apps.laos.mybunker.SettingsManager
 import es.apps.laos.mybunker.ui.theme.MyBunkerTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-var userLanguageKey: String = ""
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,11 +60,11 @@ fun LanguageSettingsScreen(navController: NavController) {
                             }) {
                                 Icon(
                                     imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = "Go home"
+                                    contentDescription = stringResource(R.string.go_home)
                                 )
                             }
                         },
-                        title = { Text(text = "Select language") },
+                        title = { Text(text = stringResource(R.string.select_language)) },
                     )
                 },
                 content = {
