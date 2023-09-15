@@ -106,7 +106,7 @@ fun NewPasswordForm(state: FormState, paddingValues: PaddingValues, navControlle
                     Field(
                         name = EXTRA_INFO_FIELD_NAME,
                         label = stringResource(R.string.extra_info),
-                        validators = listOf(Required(message = stringResource(R.string.extra_info_is_required)))
+                        validators = listOf()
                     )
                 )
             )

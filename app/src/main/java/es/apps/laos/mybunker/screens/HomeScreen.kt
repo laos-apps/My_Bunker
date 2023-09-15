@@ -114,7 +114,7 @@ fun HomeScreen(navController: NavController) {
                         },
                         actions = {
                             if (mainActivityState == MainActivityState.DEFAULT) {
-                                IconButton(onClick = { displayMenuState = !displayMenuState}) {
+                                IconButton(onClick = { displayMenuState = !displayMenuState }) {
                                     Icon(
                                         imageVector = Icons.Filled.MoreVert,
                                         contentDescription = stringResource(R.string.view_more)
@@ -127,11 +127,18 @@ fun HomeScreen(navController: NavController) {
                                 ) {
                                     DropdownMenuItem(
                                         text = { Text(stringResource(R.string.export)) },
-                                        leadingIcon = { Icon(imageVector = Icons.Filled.Output, contentDescription = stringResource(R.string.export)) },
-                                        onClick = {Log.d(
-                                            "MBK::HomeScreen::HomeScreen::DropdownMenuItem1",
-                                            "DropdownMenu option 1 clicked"
-                                        ) }
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Filled.Output,
+                                                contentDescription = stringResource(R.string.export)
+                                            )
+                                        },
+                                        onClick = {
+                                            Log.d(
+                                                "MBK::HomeScreen::HomeScreen::DropdownMenuItem1",
+                                                "DropdownMenu option 1 clicked"
+                                            )
+                                        }
                                     )
                                     // Language option will be commented because language is auto-detected by android. Just translate strings.xml
                                     /*DropdownMenuItem(
@@ -285,10 +292,11 @@ fun PasswordList(
                     containerColor = colorCard,
                 )
             ) {
-                Text(text = stringResource(R.string.title_web)+": ${it.title}")
-                Text(text = stringResource(R.string.user)+": ${it.user}")
-                Text(text = stringResource(R.string.password)+": ******")
-                Text(text = stringResource(R.string.extra_info)+": ${it.extraInfo}")
+                Text(text = stringResource(R.string.title_web) + ": ${it.title}")
+                Text(text = stringResource(R.string.user) + ": ${it.user}")
+                Text(text = stringResource(R.string.password) + ": ******")
+                if (it.extraInfo?.isNotEmpty() == true) // Extra info can be empty
+                    Text(text = stringResource(R.string.extra_info) + ": ${it.extraInfo}")
             }
         }
     }

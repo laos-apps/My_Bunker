@@ -119,7 +119,7 @@ fun EditPasswordForm(state: FormState, paddingValues: PaddingValues, navControll
                         name = EXTRA_INFO_FIELD_NAME,
                         textValue = passwordEntity.extraInfo?: "",
                         label = stringResource(R.string.extra_info),
-                        validators = listOf(Required(message = stringResource(R.string.extra_info_is_required)))
+                        validators = listOf()
                     )
                 )
             )
