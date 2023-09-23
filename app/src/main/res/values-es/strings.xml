@@ -26,4 +26,5 @@
     <string name="grant_permission">Dar permiso</string>
     <string name="please_grant_write_permission">Por favor, habilita el permiso de ESCRITURA para poder utilizar la exportación a PDF</string>
     <string name="go_to_app_settings">Ajustes de la app</string>
+    <string name="my_bunker_pdf">MyBunker.pdf</string>
 </resources>

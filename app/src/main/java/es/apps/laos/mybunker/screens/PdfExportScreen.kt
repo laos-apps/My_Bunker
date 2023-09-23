@@ -21,10 +21,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -72,9 +70,9 @@ fun PdfExportScreen(navController: NavController) {
                         title = { Text(text = stringResource(R.string.export_to_pdf)) },
                     )
                 },
-                content = {paddingValues ->
+                content = { paddingValues ->
                     // In order to avoid that content is shown behind the top bar we have to pass PaddingValues
-                    Column(modifier = Modifier.padding(paddingValues = paddingValues)){
+                    Column(modifier = Modifier.padding(paddingValues = paddingValues)) {
                         PdfExporterScheme()
                     }
                 }
@@ -85,27 +83,55 @@ fun PdfExportScreen(navController: NavController) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PdfExporterScheme(){
+fun PdfExporterScheme() {
     Log.d(
         "MBK::PdfExportScreen::PdfExporterScheme",
         "PdfExporterScheme called"
     )
     var isWritePermissionGranted = remember { mutableStateOf(false) }
     // First ask for permissions
-    RequiredSinglePermissionScreen(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE, permissionGranted = {isWritePermissionGranted.value = true})
-    if (isWritePermissionGranted.value){
+    RequiredSinglePermissionScreen(
+        permission = Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        permissionGranted = { isWritePermissionGranted.value = true })
+    if (isWritePermissionGranted.value) {
         ExportPdfButton()
     }
 }
 
 @Composable
-fun ExportPdfButton(){
+fun ExportPdfButton() {
     val context: Context = LocalContext.current
-    Button(onClick = { createPdf(passwordList = ArrayList(), context = context)}) {
+    Button(
+        onClick = {
+            Log.v(
+                "MBK::PdfExporter::ExportPdfButton",
+                "isExternalStorageWritable ${isExternalStorageWritable()}"
+            )
+            Log.v(
+                "MBK::PdfExporter::ExportPdfButton",
+                "isExternalStorageReadable ${isExternalStorageReadable()}"
+            )
+            createPdf(
+                passwordList = ArrayList(),
+                context = context
+            )
+        }
+    ) {
         Text(text = stringResource(R.string.export))
     }
 }
 
+// Checks if a volume containing external storage is available
+// for read and write.
+fun isExternalStorageWritable(): Boolean {
+    return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+}
+
+// Checks if a volume containing external storage is available to at least read.
+fun isExternalStorageReadable(): Boolean {
+    return Environment.getExternalStorageState() in
+            setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)
+}
 
 fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     Log.v(
@@ -128,7 +154,8 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     val title = Paint()
 
     // Create a page description
-    val pageInfo: PdfDocument.PageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
+    val pageInfo: PdfDocument.PageInfo =
+        PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
 
     // Start a page
     val page: PdfDocument.Page = pdfDocument.startPage(pageInfo)
@@ -182,8 +209,17 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     // our PDF file and its path.
     // below line is used to set the name of
     // our PDF file and its path.
-    val file = File(Environment.getExternalStorageDirectory(), "GFG.pdf")
-
+    // Store files in Downloads
+    val file = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+        context.getString(
+            R.string.my_bunker_pdf
+        )
+    )
+    Log.i(
+        "MBK::PdfExporter::CreatePdf",
+        "File exists?: ${file.exists()}\nFile path: ${file.absolutePath}"
+    )
     try {
         // after creating a file name we will write our PDF file to that location.
         pdfDocument.writeTo(FileOutputStream(file))
@@ -196,8 +232,9 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
         // to handle error
         Log.e(
             "MBK::PdfExporter::CreatePdf::IOException",
-            "Message: ${e.message}"
+            "Message: ${e.message}\nCause: ${e.cause}"
         )
+
     }
     // after storing our pdf to that
     // location we are closing our PDF file.
