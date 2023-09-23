@@ -42,12 +42,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import es.apps.laos.mybunker.LanguageManager
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import es.apps.laos.mybunker.MainActivityState
 import es.apps.laos.mybunker.PasswordEntity
 import es.apps.laos.mybunker.R
 import es.apps.laos.mybunker.getDbConnection
 import es.apps.laos.mybunker.ui.theme.MyBunkerTheme
+
 
 // NON-COMPOSABLE METHODS
 fun getPasswordList(context: Context): ArrayList<PasswordEntity> {
@@ -64,7 +65,7 @@ fun getPasswordList(context: Context): ArrayList<PasswordEntity> {
 
 // COMPOSABLE METHODS
 // Compose main view for listing passwords
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     // Gets context for composable methods
@@ -75,13 +76,6 @@ fun HomeScreen(navController: NavController) {
     var displayMenuState by remember { mutableStateOf(false) }
     // Stores an integer list with passwords to be deleted when selected
     var passwordListToDelete: ArrayList<Int> = ArrayList()
-    // Gets user language
-    val userLanguage = LanguageManager().getUserLanguageFromSettings(context = context)
-    Log.v(
-        "MBK::MainActivity::HomeScreen",
-        "Language key: $userLanguage"
-    )
-
     // Depending on mainActivityState, the UI will change
     MyBunkerTheme {
         // A surface container using the 'background' color from the theme
@@ -136,8 +130,9 @@ fun HomeScreen(navController: NavController) {
                                         onClick = {
                                             Log.d(
                                                 "MBK::HomeScreen::HomeScreen::DropdownMenuItem1",
-                                                "DropdownMenu option 1 clicked"
+                                                "Export option clicked"
                                             )
+                                            navController.navigate(Screens.PdfExport.route)
                                         }
                                     )
                                     // Language option will be commented because language is auto-detected by android. Just translate strings.xml

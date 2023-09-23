@@ -20,4 +20,10 @@
     <string name="language">Language</string>
     <string name="delete_passwords">Delete passwords</string>
     <string name="select_language">Select language</string>
+    <string name="export_to_pdf">Export to PDF</string>
+    <string name="required_permission">Required permission</string>
+    <string name="write_external_storage_permission_info">This permission allows My Bunker to export files in your device storage</string>
+    <string name="grant_permission">Grant permission</string>
+    <string name="please_grant_write_permission">Please, grant WRITE permission in order to use PDF export feature</string>
+    <string name="go_to_app_settings">Go to app settings</string>
 </resources>

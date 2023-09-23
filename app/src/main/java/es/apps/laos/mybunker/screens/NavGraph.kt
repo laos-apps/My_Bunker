@@ -37,11 +37,11 @@ fun NavGraph(navController: NavHostController) {
             EditPasswordScreen(navController = navController, passwordId = passwordId)
         }
         // Dropdown menu screens
-        // Screen for configuring language
+        // Screen for pdf exporting
         composable(
-            route = Screens.LanguageSettings.route
+            route = Screens.PdfExport.route
         ) {
-            LanguageSettingsScreen(navController = navController)
+            PdfExportScreen(navController = navController)
         }
     }
 }
