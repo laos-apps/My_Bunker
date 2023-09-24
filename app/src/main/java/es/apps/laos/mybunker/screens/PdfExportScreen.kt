@@ -2,6 +2,7 @@ package es.apps.laos.mybunker.screens
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
@@ -27,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.*
 import es.apps.laos.mybunker.PasswordEntity
@@ -81,14 +84,13 @@ fun PdfExportScreen(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PdfExporterScheme() {
     Log.d(
         "MBK::PdfExportScreen::PdfExporterScheme",
         "PdfExporterScheme called"
     )
-    var isWritePermissionGranted = remember { mutableStateOf(false) }
+    val isWritePermissionGranted = remember { mutableStateOf(false) }
     // First ask for permissions
     RequiredSinglePermissionScreen(
         permission = Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -103,16 +105,8 @@ fun ExportPdfButton() {
     val context: Context = LocalContext.current
     Button(
         onClick = {
-            Log.v(
-                "MBK::PdfExporter::ExportPdfButton",
-                "isExternalStorageWritable ${isExternalStorageWritable()}"
-            )
-            Log.v(
-                "MBK::PdfExporter::ExportPdfButton",
-                "isExternalStorageReadable ${isExternalStorageReadable()}"
-            )
             createPdf(
-                passwordList = ArrayList(),
+                passwordList = getPasswordList(context),
                 context = context
             )
         }
@@ -120,34 +114,24 @@ fun ExportPdfButton() {
         Text(text = stringResource(R.string.export))
     }
 }
-
-// Checks if a volume containing external storage is available
-// for read and write.
-fun isExternalStorageWritable(): Boolean {
-    return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
-}
-
-// Checks if a volume containing external storage is available to at least read.
-fun isExternalStorageReadable(): Boolean {
-    return Environment.getExternalStorageState() in
-            setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)
-}
-
 fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     Log.v(
         "MBK::PdfExporter::CreatePdf",
         "CreatePdf called"
     )
 
+    // Declaring starting points
+    val startX = 20F
+    val startY = 20F
+    var x = 0F
+    var y = 0F
+
     // Declaring width and height for our PDF file.
-    var pageHeight = 1120
-    var pageWidth = 792
+    val pageHeight = 1120
+    val pageWidth = 792
 
     // Create a new document
     val pdfDocument = PdfDocument()
-    // two variables for paint "paint" is used
-    // for drawing shapes and we will use "title"
-    // for adding text in our PDF file.
     // two variables for paint "paint" is used
     // for drawing shapes and we will use "title"
     // for adding text in our PDF file.
@@ -160,8 +144,6 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     // Start a page
     val page: PdfDocument.Page = pdfDocument.startPage(pageInfo)
 
-    // creating a variable for canvas
-    // from our page of PDF.
     // creating a variable for canvas
     // from our page of PDF.
     val canvas: Canvas = page.canvas
@@ -181,8 +163,10 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     // the first parameter is our text, second parameter
     // is position from start, third parameter is position from top
     // and then we are passing our variable of paint which is title.
-    canvas.drawText("A portal for IT professionals.", 209F, 100F, title)
-    canvas.drawText("Geeks for Geeks", 209F, 80F, title)
+    canvas.drawText("My Bunker", startX, startY, title)
+    y+=10F
+    canvas.drawText("List of passwords", startX, startY+y, title)
+    y+=20F
 
     // similarly we are creating another text and in this
     // we are aligning this text to center of our PDF file.
@@ -197,8 +181,17 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
 
     // below line is used for setting
     // our text to center of PDF.
-    title.textAlign = Paint.Align.CENTER
-    canvas.drawText("This is sample document which we have created.", 396f, 560f, title)
+    //title.textAlign = Paint.Align.CENTER
+    for (password in passwordList) {
+        canvas.drawText("Title/Web: ${password.title}", startX, startY+y, title)
+        y+=10F
+        canvas.drawText("User: ${password.user}", startX, startY+y, title)
+        y+=10F
+        canvas.drawText("Password: ${password.password}", startX, startY+y, title)
+        y+=10F
+        canvas.drawText("Extra info: ${password.extraInfo}", startX, startY+y, title)
+        y+=10F
+    }
 
     // after adding all attributes to our
     // PDF file we will be finishing our page.
@@ -239,4 +232,11 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     // after storing our pdf to that
     // location we are closing our PDF file.
     pdfDocument.close()
+    // Try to open file once is created
+    val intent = Intent(Intent.ACTION_VIEW)
+    val authority = "es.apps.laos.mybunker.fileprovider"
+    val uri = FileProvider.getUriForFile(context,authority ,file)
+    intent.setDataAndType(uri, "application/pdf")
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    startActivity(context, intent, null)
 }
