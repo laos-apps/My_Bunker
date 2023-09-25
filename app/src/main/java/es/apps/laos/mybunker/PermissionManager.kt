@@ -47,15 +47,15 @@ fun RequiredSinglePermissionScreen(
     val permissionState = rememberPermissionState(permission)
 
     if (permissionState.status.isGranted) {
-        permissionStatusText = "Granted"
+        permissionStatusText = stringResource(R.string.granted)
         permissionGranted()
 
     } else if (permissionState.status.shouldShowRationale) {
-        permissionStatusText = "Denied"
+        permissionStatusText = stringResource(R.string.denied)
         RequiredRationalPermissionDialog(permission)
 
     } else {
-        permissionStatusText = "Not granted"
+        permissionStatusText = stringResource(R.string.not_granted)
         RequiredLaunchPermissionDialog(permission, permissionState)
 
         // Automatically open permission request window. First, I prefer to show an info Alert Dialog to inform users
@@ -101,7 +101,7 @@ fun RequiredLaunchPermissionDialog(
                 Button(onClick = {
                     permissionState.launchPermissionRequest()
                 }) {
-                    Text(text = "Launch")
+                    Text(text = stringResource(R.string.launch))
                 }
             }
         )
@@ -225,13 +225,13 @@ fun RequiredLaunchPermissionsDialog(
 
     AlertDialog(
         onDismissRequest = { },
-        title = { Text(text = "Permission Required!") },
+        title = { Text(text = stringResource(R.string.permission_required)) },
         text = { Text(text = permissionLabels) },
         confirmButton = {
             Button(onClick = {
                 multiplePermissionState.launchMultiplePermissionRequest()
             }) {
-                Text(text = "Launch")
+                Text(text = stringResource(id = R.string.launch))
             }
         },
     )
@@ -256,7 +256,7 @@ fun RequiredRationalPermissionsDialog(
 
     AlertDialog(
         onDismissRequest = { },
-        title = { Text(text = "Permission Required!") },
+        title = { Text(text = stringResource(id = R.string.permission_required)) },
         text = { Text(text = permissionLabels) },
         confirmButton = {
             Button(onClick = {
@@ -266,7 +266,7 @@ fun RequiredRationalPermissionsDialog(
                     }
                 ContextCompat.startActivity(context, intent, null)
             }) {
-                Text(text = "Go to settings")
+                Text(text = stringResource(id = R.string.go_to_app_settings))
             }
         },
     )

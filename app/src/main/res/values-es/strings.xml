@@ -27,4 +27,14 @@
     <string name="please_grant_write_permission">Por favor, habilita el permiso de ESCRITURA para poder utilizar la exportación a PDF</string>
     <string name="go_to_app_settings">Ajustes de la app</string>
     <string name="my_bunker_pdf">MyBunker.pdf</string>
+    <string name="add_your_first_password">Añade tu primera contraseña presionando el botón +</string>
+    <string name="hide_password">Ocultar contraseña</string>
+    <string name="show_password">Mostrar contraseña</string>
+    <string name="list_of_passwords">Lista de contraseñas</string>
+    <string name="granted">Concedido</string>
+    <string name="denied">Denegado</string>
+    <string name="not_granted">No concedido</string>
+    <string name="launch">Solicitar</string>
+    <string name="permission_required">Permiso requerido</string>
+    <string name="required_permission_status">Estado del permiso requerido</string>
 </resources>

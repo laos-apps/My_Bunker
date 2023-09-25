@@ -3,7 +3,9 @@ package es.apps.laos.mybunker.screens
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,10 +38,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -187,22 +195,37 @@ fun HomeScreen(navController: NavController) {
                 },
                 floatingActionButtonPosition = FabPosition.End,
                 content = { paddingValues ->
-                    // In order to avoid that content is shown behind the top-bar we have to pass padding values
-                    Column(modifier = Modifier.padding(paddingValues = paddingValues)) {
-                        PasswordList(
-                            navController = navController,
-                            passwordEntityList = getPasswordList(context),
-                            changeState = { _mainActivityState ->
-                                mainActivityState = _mainActivityState
-                            },
-                            passwordListToDelete = { _passwordListToDelete ->
-                                passwordListToDelete = _passwordListToDelete
-                                Log.v(
-                                    "MBK::HomeScreen::HomeScreen::content}",
-                                    "Content of passwordListToDelete: $passwordListToDelete"
-                                )
-                            }
-                        )
+                    val passwordEntityList = getPasswordList(context)
+                    if (passwordEntityList.isEmpty()) {
+                        Column(
+                            modifier = Modifier.fillMaxSize().padding(paddingValues = paddingValues),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            // If there are no passwords, a message will be shown
+                            Text(
+                                textAlign = TextAlign.Center,
+                                text = stringResource(R.string.add_your_first_password)
+                            )
+                        }
+                    } else {
+                        // In order to avoid that content is shown behind the top-bar we have to pass padding values
+                        Column(modifier = Modifier.padding(paddingValues = paddingValues)) {
+                            PasswordList(
+                                navController = navController,
+                                passwordEntityList = passwordEntityList,
+                                changeState = { _mainActivityState ->
+                                    mainActivityState = _mainActivityState
+                                },
+                                passwordListToDelete = { _passwordListToDelete ->
+                                    passwordListToDelete = _passwordListToDelete
+                                    Log.v(
+                                        "MBK::HomeScreen::HomeScreen::content}",
+                                        "Content of passwordListToDelete: $passwordListToDelete"
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             )
@@ -226,6 +249,7 @@ fun PasswordList(
     val selectedPasswordArrayList: ArrayList<Int> = ArrayList()
 
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
+
         items(items = passwordEntityList) {
             var colorCard: Color by remember { mutableStateOf(Color.Cyan) }
             Card(
@@ -287,12 +311,77 @@ fun PasswordList(
                     containerColor = colorCard,
                 )
             ) {
-                Text(text = stringResource(R.string.title_web) + ": ${it.title}")
-                Text(text = stringResource(R.string.user) + ": ${it.user}")
-                Text(text = stringResource(R.string.password) + ": ******")
-                if (it.extraInfo?.isNotEmpty() == true) // Extra info can be empty
-                    Text(text = stringResource(R.string.extra_info) + ": ${it.extraInfo}")
+                val startTextPadding = 10
+                val bottomTextPadding = 10
+                val endTextPadding = 10
+                val topTextPadding = 10
+
+                Text(
+                    modifier = Modifier.padding(
+                        start = startTextPadding.dp,
+                        end = endTextPadding.dp,
+                        top = topTextPadding.dp
+                    ),
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(stringResource(R.string.title_web) + ": ")
+                        }
+                        append(it.title)
+                    }
+                )
+                Text(
+                    modifier = Modifier.padding(
+                        start = startTextPadding.dp,
+                        end = endTextPadding.dp
+                    ),
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(stringResource(R.string.user) + ": ")
+                        }
+                        append(it.user)
+                    }
+                )
+                if (it.extraInfo?.isEmpty() == true) {
+                    Text(
+                        modifier = Modifier.padding(
+                            start = startTextPadding.dp,
+                            end = endTextPadding.dp,
+                            bottom = bottomTextPadding.dp // we add bottom padding in case there is no extra info
+                        ),
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(stringResource(R.string.password) + ": ")
+                            }
+                            append("******")
+                        }
+                    )
+                } else {// Extra info can be empty
+                    Text(
+                        modifier = Modifier.padding(
+                            start = startTextPadding.dp,
+                            end = endTextPadding.dp
+                        ), text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(stringResource(R.string.password) + ": ")
+                            }
+                            append("******")
+                        }
+                    )
+                    Text(
+                        modifier = Modifier.padding(
+                            start = startTextPadding.dp,
+                            end = endTextPadding.dp,
+                            bottom = bottomTextPadding.dp
+                        ), text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(stringResource(R.string.extra_info) + ": ")
+                            }
+                            append(it.extraInfo)
+                        }
+                    )
+                }
             }
+
         }
     }
 }

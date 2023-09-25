@@ -163,9 +163,9 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     // the first parameter is our text, second parameter
     // is position from start, third parameter is position from top
     // and then we are passing our variable of paint which is title.
-    canvas.drawText("My Bunker", startX, startY, title)
+    canvas.drawText(context.getString(R.string.my_bunker), startX, startY, title)
     y+=10F
-    canvas.drawText("List of passwords", startX, startY+y, title)
+    canvas.drawText(context.getString(R.string.list_of_passwords), startX, startY+y, title)
     y+=20F
 
     // similarly we are creating another text and in this

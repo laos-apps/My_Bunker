@@ -27,4 +27,15 @@
     <string name="please_grant_write_permission">Please, grant WRITE permission in order to use PDF export feature</string>
     <string name="go_to_app_settings">Go to app settings</string>
     <string name="my_bunker_pdf">MyBunker.pdf</string>
+    <string name="add_your_first_password">Add your first password by clicking + button</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+    <string name="list_of_passwords">List of passwords</string>
+    <string name="granted">Granted</string>
+    <string name="denied">Denied</string>
+    <string name="not_granted">Not granted</string>
+    <string name="launch">Launch</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="required_permission_status">Required Permission status</string>
+
 </resources>
