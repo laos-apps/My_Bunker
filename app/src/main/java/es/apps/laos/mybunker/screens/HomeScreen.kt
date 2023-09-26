@@ -259,6 +259,10 @@ fun PasswordList(
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(items = passwordEntityList) {
             var cardColor: Color by remember { mutableStateOf(defaultCardBackgroundColor) }
+            // Check color always (not only when long press is selected)
+            if (selectedPasswordArrayList.contains(it.id)){
+                cardColor = selectedCardBackgroundColor
+            }
             var textColor: Color by remember { mutableStateOf(defaultCardTextColor) }
             ElevatedCard(
                 modifier = Modifier
