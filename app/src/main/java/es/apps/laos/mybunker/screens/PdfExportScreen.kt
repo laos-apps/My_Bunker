@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.os.Environment
+import android.print.PdfConverter
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -24,6 +25,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -75,7 +77,10 @@ fun PdfExportScreen(navController: NavController) {
                 },
                 content = { paddingValues ->
                     // In order to avoid that content is shown behind the top bar we have to pass PaddingValues
-                    Column(modifier = Modifier.padding(paddingValues = paddingValues)) {
+                    Column(
+                        modifier = Modifier.fillMaxSize().padding(paddingValues = paddingValues),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         PdfExporterScheme()
                     }
                 }
@@ -105,7 +110,11 @@ fun ExportPdfButton() {
     val context: Context = LocalContext.current
     Button(
         onClick = {
-            createPdf(
+            /*createOldPdf(
+                passwordList = getPasswordList(context),
+                context = context
+            )*/
+            createNewPdf(
                 passwordList = getPasswordList(context),
                 context = context
             )
@@ -114,7 +123,83 @@ fun ExportPdfButton() {
         Text(text = stringResource(R.string.export))
     }
 }
-fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
+
+fun createNewPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
+    val file = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+        context.getString(
+            R.string.my_bunker_pdf
+        )
+    )
+    Log.i(
+        "MBK::PdfExportScreen::createNewPdf",
+        "File exists?: ${file.exists()}\nFile path: ${file.absolutePath}"
+    )
+    val htmlString =
+        "<html><head><style>" + generateStyle() + "</style></head><body>" + generateTitle(context = context) + generateContent(
+            context = context,
+            passwordList = passwordList
+        ) + "</body></html>"
+
+    Log.i(
+        "MBK::PdfExportScreen::generateContent",
+        "Content of htmlString: $htmlString"
+    )
+    PdfConverter.instance?.convert(context, htmlString, file)
+
+    // Try to open file once is created
+    val intent = Intent(Intent.ACTION_VIEW)
+    val authority = "es.apps.laos.mybunker.fileprovider"
+    val uri = FileProvider.getUriForFile(context, authority, file)
+    intent.setDataAndType(uri, "application/pdf")
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    startActivity(context, intent, null)
+}
+
+fun generateStyle(): String {
+    var styleCss = ""
+    styleCss = styleCss.plus("h1 {color:blue;}") // Tittle will be coloured
+    styleCss = styleCss.plus("table, td, th {border: 1px solid;} ") // Applying border to table
+    styleCss =
+        styleCss.plus("table {width: 100%; border-collapse: collapse;}") // Avoid double border
+    styleCss = styleCss.plus("th, td {padding: 10px;}") // Insert padding to cells
+    return styleCss
+}
+
+fun generateTitle(context: Context): String {
+    return "<h1>My Bunker</h1><h2>${context.getString(R.string.list_of_passwords)}</h2>"
+}
+
+fun generateContent(passwordList: ArrayList<PasswordEntity>, context: Context): String {
+    var contentHtml = ""
+    if (passwordList.isEmpty()) {
+        contentHtml = "There are no passwords stored in My Bunker"
+    } else {
+        contentHtml = contentHtml.plus("<table>")
+        contentHtml = contentHtml.plus("<tr>")
+        contentHtml = contentHtml.plus("<th>${context.getString(R.string.title_web)}</th>")
+        contentHtml = contentHtml.plus("<th>${context.getString(R.string.user)}</th>")
+        contentHtml = contentHtml.plus("<th>${context.getString(R.string.password)}</th>")
+        contentHtml = contentHtml.plus("<th>${context.getString(R.string.extra_info)}</th>")
+        contentHtml = contentHtml.plus("</tr>")
+        for (passwordEntity: PasswordEntity in passwordList) {
+            contentHtml = contentHtml.plus("<tr>")
+            contentHtml = contentHtml.plus("<td>${passwordEntity.title}</th>")
+            contentHtml = contentHtml.plus("<td>${passwordEntity.user}</th>")
+            contentHtml = contentHtml.plus("<td>${passwordEntity.password}</th>")
+            contentHtml = contentHtml.plus("<td>${passwordEntity.extraInfo}</th>")
+            contentHtml = contentHtml.plus("</tr>")
+        }
+        contentHtml = contentHtml.plus("</table>")
+    }
+    Log.i(
+        "MBK::PdfExportScreen::generateContent",
+        "Content of contentHtml: $contentHtml"
+    )
+    return contentHtml
+}
+
+fun createOldPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     Log.v(
         "MBK::PdfExporter::CreatePdf",
         "CreatePdf called"
@@ -164,9 +249,9 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     // is position from start, third parameter is position from top
     // and then we are passing our variable of paint which is title.
     canvas.drawText(context.getString(R.string.my_bunker), startX, startY, title)
-    y+=10F
-    canvas.drawText(context.getString(R.string.list_of_passwords), startX, startY+y, title)
-    y+=20F
+    y += 10F
+    canvas.drawText(context.getString(R.string.list_of_passwords), startX, startY + y, title)
+    y += 20F
 
     // similarly we are creating another text and in this
     // we are aligning this text to center of our PDF file.
@@ -183,14 +268,14 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     // our text to center of PDF.
     //title.textAlign = Paint.Align.CENTER
     for (password in passwordList) {
-        canvas.drawText("Title/Web: ${password.title}", startX, startY+y, title)
-        y+=10F
-        canvas.drawText("User: ${password.user}", startX, startY+y, title)
-        y+=10F
-        canvas.drawText("Password: ${password.password}", startX, startY+y, title)
-        y+=10F
-        canvas.drawText("Extra info: ${password.extraInfo}", startX, startY+y, title)
-        y+=10F
+        canvas.drawText("Title/Web: ${password.title}", startX, startY + y, title)
+        y += 10F
+        canvas.drawText("User: ${password.user}", startX, startY + y, title)
+        y += 10F
+        canvas.drawText("Password: ${password.password}", startX, startY + y, title)
+        y += 10F
+        canvas.drawText("Extra info: ${password.extraInfo}", startX, startY + y, title)
+        y += 10F
     }
 
     // after adding all attributes to our
@@ -235,7 +320,7 @@ fun createPdf(passwordList: ArrayList<PasswordEntity>, context: Context) {
     // Try to open file once is created
     val intent = Intent(Intent.ACTION_VIEW)
     val authority = "es.apps.laos.mybunker.fileprovider"
-    val uri = FileProvider.getUriForFile(context,authority ,file)
+    val uri = FileProvider.getUriForFile(context, authority, file)
     intent.setDataAndType(uri, "application/pdf")
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     startActivity(context, intent, null)

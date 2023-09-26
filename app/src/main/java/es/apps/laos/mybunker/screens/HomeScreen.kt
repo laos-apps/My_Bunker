@@ -3,7 +3,7 @@ package es.apps.laos.mybunker.screens
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,10 +18,10 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Output
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -50,7 +50,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import es.apps.laos.mybunker.MainActivityState
 import es.apps.laos.mybunker.PasswordEntity
 import es.apps.laos.mybunker.R
@@ -73,7 +72,7 @@ fun getPasswordList(context: Context): ArrayList<PasswordEntity> {
 
 // COMPOSABLE METHODS
 // Compose main view for listing passwords
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     // Gets context for composable methods
@@ -185,7 +184,10 @@ fun HomeScreen(navController: NavController) {
                 floatingActionButton = {
                     // FAB is just shown when activity is in default state
                     if (mainActivityState == MainActivityState.DEFAULT) {
-                        FloatingActionButton(onClick = {
+                        FloatingActionButton(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.primary,
+                            onClick = {
                             // Open new form for adding a new password
                             navController.navigate(Screens.AddPassword.route)
                         }) {
@@ -198,7 +200,9 @@ fun HomeScreen(navController: NavController) {
                     val passwordEntityList = getPasswordList(context)
                     if (passwordEntityList.isEmpty()) {
                         Column(
-                            modifier = Modifier.fillMaxSize().padding(paddingValues = paddingValues),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues = paddingValues),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
@@ -247,12 +251,16 @@ fun PasswordList(
         remember { mutableStateOf(listOf()) } // Initialize
     // Update the list state with a new list
     val selectedPasswordArrayList: ArrayList<Int> = ArrayList()
-
+    // Colors
+    val defaultCardBackgroundColor: Color = MaterialTheme.colorScheme.primaryContainer
+    val defaultCardTextColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
+    val selectedCardBackgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer
+    val selectedCardTextColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
-
         items(items = passwordEntityList) {
-            var colorCard: Color by remember { mutableStateOf(Color.Cyan) }
-            Card(
+            var cardColor: Color by remember { mutableStateOf(defaultCardBackgroundColor) }
+            var textColor: Color by remember { mutableStateOf(defaultCardTextColor) }
+            ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
@@ -276,20 +284,22 @@ fun PasswordList(
                             )
 
                             // Add/remove item to/from selected list
-                            colorCard = if (selectedPasswordArrayList.contains(it.id)) {
+                            if (selectedPasswordArrayList.contains(it.id)) {
                                 Log.v(
                                     "MBK::HomeScreen::PasswordList::onLongClick",
                                     "selectedPasswordArrayList contains id ${it.id}"
                                 )
                                 selectedPasswordArrayList.remove(it.id)
-                                Color.Cyan
+                                cardColor = defaultCardBackgroundColor
+                                textColor = defaultCardTextColor
                             } else {
                                 Log.v(
                                     "MBK::HomeScreen::PasswordList::onLongClick",
                                     "selectedPasswordArrayList DOES NOT contain id ${it.id}"
                                 )
                                 selectedPasswordArrayList.add(it.id)
-                                Color.Red
+                                cardColor = selectedCardBackgroundColor
+                                textColor = selectedCardTextColor
                             }
                             Log.d(
                                 "MBK::HomeScreen::PasswordList::onLongClick",
@@ -306,9 +316,9 @@ fun PasswordList(
                                 changeState(MainActivityState.DEFAULT)
                         }
                     ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = colorCard,
+                    containerColor = cardColor,
                 )
             ) {
                 val startTextPadding = 10
@@ -327,7 +337,8 @@ fun PasswordList(
                             append(stringResource(R.string.title_web) + ": ")
                         }
                         append(it.title)
-                    }
+                    },
+                    color = textColor
                 )
                 Text(
                     modifier = Modifier.padding(
@@ -339,7 +350,8 @@ fun PasswordList(
                             append(stringResource(R.string.user) + ": ")
                         }
                         append(it.user)
-                    }
+                    },
+                    color = textColor
                 )
                 if (it.extraInfo?.isEmpty() == true) {
                     Text(
@@ -353,7 +365,8 @@ fun PasswordList(
                                 append(stringResource(R.string.password) + ": ")
                             }
                             append("******")
-                        }
+                        },
+                        color = textColor
                     )
                 } else {// Extra info can be empty
                     Text(
@@ -365,7 +378,8 @@ fun PasswordList(
                                 append(stringResource(R.string.password) + ": ")
                             }
                             append("******")
-                        }
+                        },
+                        color = textColor
                     )
                     Text(
                         modifier = Modifier.padding(
@@ -377,7 +391,8 @@ fun PasswordList(
                                 append(stringResource(R.string.extra_info) + ": ")
                             }
                             append(it.extraInfo)
-                        }
+                        },
+                        color = textColor
                     )
                 }
             }
